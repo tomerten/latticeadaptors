@@ -1,3 +1,6 @@
+from json import load
+from pathlib import Path
+
 import pandas as pd
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -6,7 +9,7 @@ with (BASE_DIR / "../mapfiles/madx_columns.json").open() as file:
     MADX_ATTRIBUTES = load(file)
 
 
-def parse_table_to_madx_definitions(df: pd.DataFrame) -> str:
+def _parse_table_to_madx_definitions(df: pd.DataFrame) -> str:
     """
     Method to parse table to MADX sequence file definitions.
 
@@ -59,5 +62,56 @@ def parse_table_to_madx_definitions(df: pd.DataFrame) -> str:
 
         # add line to text
         text += line
+
+    return text
+
+
+def _parse_table_to_madx_sequence_part(name: str, df: pd.DataFrame, length: float) -> str:
+    """
+    Method to parse a table to the MADX sequence part.
+
+    Arguments:
+    ----------
+    name    : str
+        name of the sequence
+    df      : pd.DataFrame
+        table containing the elements and their attributes
+    length  : float
+        length of the sequence (drifts are determined automatically)
+
+    """
+    # start the sequence definition
+    text = "{}: SEQUENCE, L={};\n".format(name, length)
+
+    # loop over the table rows
+    for _, row in df.iterrows():
+        line = "{:11}, at = {:12.6f};\n".format(row["name"], row["at"])
+        text += line
+
+    # close the sequence definition
+    text += "ENDSEQUENCE;"
+
+    return text
+
+
+def parse_table_to_madx_sequence_string(name: str, df: pd.DataFrame, length: float) -> str:
+    """
+    Method to parse table to MADX sequence.
+
+    Arguments:
+    ----------
+    name    : str
+        name of the sequence
+    df      : pd.DataFrame
+        table containing the element data
+    length  : float
+        length of the sequence
+
+    """
+    # parse the element definitions
+    text = _parse_table_to_madx_definitions(df)
+
+    # parse the element positions
+    text += _parse_table_to_madx_sequence_part(name, df, length)
 
     return text

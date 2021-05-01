@@ -1,6 +1,10 @@
 import pandas as pd
 import pytest
-from latticeadaptors import __version__, parse_from_madx_sequence_string
+from latticeadaptors import (
+    __version__,
+    parse_from_madx_sequence_string,
+    parse_table_to_madx_sequence_string,
+)
 from pandas.testing import assert_frame_equal
 
 # test inputs and outputs
@@ -25,6 +29,15 @@ seq_str_test = [
     ),
 ]
 
+table_to_seq = [
+    (
+        "FODO",
+        pd.DataFrame([{"family": "MARKER", "name": "TESTMARKER", "at": 2.0}]),
+        8.0,
+        "TESTMARKER      : MARKER      ;\nFODO: SEQUENCE, L=8.0;\nTESTMARKER , at =     2.000000;\nENDSEQUENCE;",
+    ),
+]
+
 
 def test_version():
     assert __version__ == "0.1.0"
@@ -38,3 +51,9 @@ def test_parse_from_madx_seqeunce_string(string, expected_name, expected_len, ex
     assert name == expected_name
     assert length == expected_len
     assert_frame_equal(df, expected_df, check_like=True)
+
+
+@pytest.mark.parametrize("name, df, length, string", table_to_seq)
+def test_parse_to_madx_seqeunce_string(name, df, length, string):
+    newstring = parse_table_to_madx_sequence_string(name, df, length)
+    assert string == newstring
