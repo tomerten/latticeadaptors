@@ -89,3 +89,11 @@ def parse_from_madx_sequence_string(string: str) -> (str, float, pd.DataFrame):
     print("Warning: bare lattice only positions returned")
 
     return name, length, dfpos
+
+
+def parse_from_madx_sequence_file(filename: str) -> (str, float, pd.DataFrame):
+    """Method to parse madx seq from file to table format."""
+    with open(filename, "r") as f:
+        string = f.read()
+
+    return parse_from_madx_sequence_string(string)
