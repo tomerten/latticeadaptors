@@ -66,7 +66,7 @@ def _parse_table_to_madx_definitions(df: pd.DataFrame) -> str:
     return text
 
 
-def _parse_table_to_madx_sequence_part(name: str, df: pd.DataFrame, length: float) -> str:
+def _parse_table_to_madx_sequence_part(name: str, length: float, df: pd.DataFrame) -> str:
     """
     Method to parse a table to the MADX sequence part.
 
@@ -94,7 +94,7 @@ def _parse_table_to_madx_sequence_part(name: str, df: pd.DataFrame, length: floa
     return text
 
 
-def parse_table_to_madx_sequence_string(name: str, df: pd.DataFrame, length: float) -> str:
+def parse_table_to_madx_sequence_string(name: str, length: float, df: pd.DataFrame) -> str:
     """
     Method to parse table to MADX sequence.
 
@@ -112,6 +112,14 @@ def parse_table_to_madx_sequence_string(name: str, df: pd.DataFrame, length: flo
     text = _parse_table_to_madx_definitions(df)
 
     # parse the element positions
-    text += _parse_table_to_madx_sequence_part(name, df, length)
+    text += _parse_table_to_madx_sequence_part(name, length, df)
 
     return text
+
+
+def parse_table_to_madx_sequence_file(
+    name: str, length: float, df: pd.DataFrame, filename: str
+) -> None:
+    """Method to parse table to madx sequence and save in file."""
+    with open(filename, "w") as f:
+        f.write(parse_table_to_madx_sequence_string(name, length, df))
