@@ -204,7 +204,6 @@ def parse_table_to_elegant_string(name: str, df: pd.DataFrame) -> str:
     """
     Method to transform the MADX seq table to an Elegant lte file
     """
-
     # init output
     text = """"""
     lattice_template = "{}: LINE=({})".format
@@ -268,3 +267,8 @@ def parse_table_to_elegant_string(name: str, df: pd.DataFrame) -> str:
     text += lattice
 
     return text
+
+
+def parse_table_to_elegant_file(name: str, df: pd.DataFrame, filename: str) -> None:
+    with open(filename, "w") as f:
+        f.write(parse_table_to_elegant_string(name, df))
