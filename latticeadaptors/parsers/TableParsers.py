@@ -123,3 +123,67 @@ def parse_table_to_madx_sequence_file(
     """Method to parse table to madx sequence and save in file."""
     with open(filename, "w") as f:
         f.write(parse_table_to_madx_sequence_string(name, length, df))
+
+
+def parse_table_to_madx_install_str(name: str, df: pd.DataFrame) -> str:
+    """
+    Method to parse table to MADX SEQEDIT INSTALL string.
+    This can be saved to file to load via CALL or used
+    directly as MADX input string using MADX().input(str) from
+    cpymad package.
+
+    Arguments:
+    ----------
+    name    : str
+        name of the sequence to be edited
+    df      : pd.DataFrame
+        table with elements to install (requires name, at as columns)
+
+    Returns:
+    --------
+    Madx input string to install the elements.
+
+    """
+
+    # start sequence edit
+    text = "USE, SEQUENCE={};\n".format(name)
+    text += "SEQEDIT, SEQUENCE = {};  \nFLATTEN;\n".format(name)
+    for _, row in df.iterrows():
+        line = "INSTALL, ELEMENT = {:16}, AT = {:12.6f};\n".format(row["name"], row["at"])
+        text += line
+
+    # end sequence edit
+    text += "FLATTEN;\nENDEDIT;"
+
+    return text
+
+
+def parse_table_to_madx_remove_str(name: str, df: pd.DataFrame) -> str:
+    """
+    Method to parse a seq table to MADX SEQEDIT REMOVE string.
+    This can be saved to file to load via CALL or used directly
+    as MADX input string using MADX().input(str) from the cpymad
+    package.
+
+    Arguments:
+    ----------
+    name    : str
+        name of the sequence to be edited
+    df      : pd.DataFrame
+        table with elements to remove (requires name, at as columns)
+
+    Returns:
+    --------
+    Madx input string to install the elements.
+    """
+    # start sequence edit
+    text = "USE, SEQUENCE={};\n".format(name)
+    text += "SEQEDIT, SEQUENCE = {};  \nFLATTEN;\n".format(name)
+    for _, row in df.iterrows():
+        line = "REMOVE, ELEMENT = {:16};\n".format(row["name"])
+        text += line
+
+    # end sequence edit
+    text += "FLATTEN;\nENDEDIT;"
+
+    return text
