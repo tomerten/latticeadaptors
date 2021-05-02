@@ -272,3 +272,160 @@ def parse_table_to_elegant_string(name: str, df: pd.DataFrame) -> str:
 def parse_table_to_elegant_file(name: str, df: pd.DataFrame, filename: str) -> None:
     with open(filename, "w") as f:
         f.write(parse_table_to_elegant_string(name, df))
+
+
+def parse_table_to_tracy_string(latname: str, df: pd.DataFrame) -> str:
+    """
+    Method to transform the MADX seq table to tracy lattice string.
+    """
+
+    # init output
+    text = """"""
+    template_marker = "{}: Marker;".format
+    template_bpm = "{}: Beam Position Monitor;".format
+    template_drift = "{}: Drift, {};".format
+    template_bend = "{}: Bending, {}, N = Nbend, Method = 4;".format
+    template_quad = "{}: Quadrupole, {}, N = Nquad, Method = 4;".format
+    template_sext = "{}: Sextupole, {}, N = Nsext, Method = 4;".format
+    template_oct = "{}: Multipole, L = {}, HOM = (4,{}/6.0,0.0), N = Nsext, Method = 4;".format
+    template_cav = "{}: Cavity, {};".format
+
+    lattice_template = "{}: "
+    n_elem = 10
+    lattice_elements = list(df["name"].values)
+    n = len(lattice_elements)
+    if n >= n_elem:
+        lattice_template += "\n "
+    for k in range(2, n + 2):
+        if (k - 1) % (n_elem + 1) == 0:
+            lattice_template += "\n "
+        lattice_template += lattice_elements[k - 2]
+        if k < n + 1:
+            lattice_template += ", "
+        else:
+            lattice_template += ";"
+    # element_template = "{}: {}, {}".format
+
+    df = df.drop(columns=["pos", "at"], errors="ignore")
+    lattice = lattice_template.format(latname)
+
+    df = df.drop_duplicates()
+    # loop over the rows of the frame
+    for _, row in df.iterrows():
+        # get the element family to check against allowed attrs
+        keyword = TO_TRACY_ELEMENTS[row["family"]]
+        name = row["name"]
+
+        # get allowed attrs - to distinguish madx from elegant columns
+        allowed_attrs = TRACY_ATTRIBUTES[keyword]
+        # print(allowed_attrs)
+
+        # line = ""
+        # name and element type
+        # line += "{:16}: {:12}, ".format(row["name"], keyword)
+
+        # remove non attrs from columns
+        row = row.drop(["name", "at", "family", "end_pos", "sector"], errors="ignore").dropna()
+        # print(row.index)
+        # update the indices
+
+        try:
+            row.index = [TO_TRACY_ATTR[c] for c in row.index if TO_TRACY_ATTR[c] != ""]
+            # row.index = [TO_TRACY_ATTR[c] for c in row.index if c in allowed_attrs]
+            nrow = row.index
+        except:
+            nrow = [TO_TRACY_ATTR[c] for c in row.index if TO_TRACY_ATTR[c] != ""]
+            # nrow = [TO_TRACY_ATTR[c] for c in row.index if c in allowed_attrs]
+
+        if keyword == "bpm":
+            line = template_bpm(name)
+        elif keyword == "marker":
+            line = template_marker(name)
+        elif keyword == "drift":
+            line = template_drift(name, "L = {}".format(row["L"]))
+        elif keyword == "bend":
+            new_row = {"L": row["L"]}
+            new_row["T"] = np.degrees(row["T"])
+
+            if "Roll" in nrow:
+                new_row["Roll"] = np.degrees(row.get("Roll", None))
+
+            if "Gap" in nrow:
+                new_row["Gap"] = 4.0 * row.Gap * row.loc_fint
+
+            if "T1" in nrow:
+                new_row["T1"] = np.degrees(row.T1)
+            if "T2" in nrow:
+                new_row["T2"] = np.degrees(row.T2)
+            if "K" in nrow:
+                new_row["K"] = row.K
+
+            line = template_bend(
+                name,
+                ", ".join(
+                    [
+                        "{} = {:17.15f}".format(k, v)
+                        if k not in ["L", "K"]
+                        else "{} = {:8.6f}".format(k, v)
+                        for k, v in new_row.items()
+                    ]
+                ),
+            )
+            # line += ", N = Nbend, Method = 4;"
+
+        elif keyword == "quad":
+            line = template_quad(
+                name,
+                ", ".join(
+                    ["{} = {:8.6f}".format(k, v) for k, v in row.items() if k in allowed_attrs]
+                ),
+            )
+            # line += ", N = Nquad, Method = 4;"
+
+        elif keyword == "sext":
+            line = template_sext(
+                name,
+                ", ".join(
+                    [
+                        "{} = {:8.6f}".format(k, v) if k != "K" else "{} = {}/2.0".format(k, v)
+                        for k, v in row.items()
+                        if k in allowed_attrs
+                    ]
+                ),
+            )
+            # line += ", N = Nsext, Method = 4;"
+        elif keyword == " oct1":
+            line = template_oct(name, row["L"], row["K"])
+
+        elif keyword == "cavity":
+            new_row = {"L": row["L"]}
+            new_row["Frequency"] = row.get("Frequency", 0.0)
+            new_row["Voltage"] = row.get("Voltage", 0.0)
+            new_row["phi"] = row.get("phi", 0)
+
+            line = template_cav(
+                name,
+                ", ".join(
+                    [
+                        "{} = {:17.15f}".format(k, float(v))
+                        if k not in ["L"]
+                        else "{} = {:8.6f}".format(k, float(v))
+                        for k, v in new_row.items()
+                    ]
+                ),
+            )
+
+        line += "\n"
+
+        # add line to text
+        text += line
+        # print(text)
+    text += "\n\n"
+    text += lattice
+
+    text += "\n\n"
+    text += "ring: {};\n\n".format(latname)
+    text += "cell: ring, symmetry = 1;"
+    text += "\n\nend;"
+
+    return text
