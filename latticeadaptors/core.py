@@ -14,6 +14,7 @@ from latticeadaptors import (
     parse_table_to_tracy_string,
 )
 
+from .parsers.TableParsers import _parse_table_to_madx_definitions
 from .Utils.MadxUtils import install_start_end_marke
 
 
@@ -108,4 +109,28 @@ class LatticeAdaptor:
             newrow["L"] = np.round(self.len - nextrow["pos"], 6)
             newrow["pos"] = (row["pos"] + row["L"] / 2.0) + (newrow["L"] / 2.0)
             newrows.append(pd.Series(newrow).to_frame().T)
-        return (pd.concat(newrows)).reset_index(drop=True)
+
+        self.table = (pd.concat(newrows)).reset_index(drop=True)
+
+    def parse_table_to_madx_line_string(self):
+        """Method to convert table to madx line def lattice file string."""
+        add_drifts(self.table, self.len)
+        defstr = _parse_table_to_madx_definitions(self.table)
+        linestr = "{}: LINE=({});".format(
+            name,
+            ",\n\t\t".join(
+                [",".join(c) for c in list(self.chunks(self.table.name.to_list(), 20))]
+            ),
+        )
+        return defstr + "\n\n" + linestr
+
+    @staticmethod
+    def chunks(lst, n):
+        """Yield successive n-sized chunks from lst."""
+        for i in range(0, len(lst), n):
+            yield lst[i : i + n]
+
+    def parse_table_madx_line_file(self, filename: str):
+        """Method to convert table to madx line def lattice file string and write to file."""
+        with open(filename, "w") as f:
+            f.write(self.parse_table_to_madx_line())
