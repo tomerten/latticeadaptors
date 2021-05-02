@@ -70,3 +70,42 @@ class LatticeAdaptor:
     def madx_sequence_add_start_end_marker_string(self):
         """Return madx string to install marker at start and at end of lattice"""
         return install_start_end_marker(self.name, self.len)
+
+    def add_drifts(self):
+        """Method to add back drifts to sequence."""
+        self.history.put((self.name, self.len, self.table))
+
+        df = self.table.copy()
+        df.reset_index(inplace=True, drop=True)
+        name = "D"
+        family = "DRIFT"
+
+        df.loc[df.L.isna(), "L"] = 0
+        newrows = []
+        ndrift = 0
+        for i, row in df.iterrows():
+            # add the row
+            newrows.append(pd.DataFrame(row).T)
+
+            # check if next row
+            if i < len(df) - 1:
+                # check if next row pos is not equal to the current
+                nextrow = df.loc[i + 1]
+                if nextrow["pos"] > row.pos:
+                    ndrift += 1
+                    newrow = {}
+                    newrow["name"] = name + str(ndrift)
+                    newrow["family"] = family
+                    newrow["L"] = np.round(
+                        (nextrow["pos"] - nextrow["L"] / 2.0) - (row["pos"] + row["L"] / 2.0), 6
+                    )
+                    newrow["pos"] = (row["pos"] + row["L"] / 2.0) + (newrow["L"] / 2.0)
+                    newrows.append(pd.Series(newrow).to_frame().T)
+        if nextrow["pos"] < self.len:
+            newrow = {}
+            newrow["name"] = name + str(ndrift)
+            newrow["family"] = family
+            newrow["L"] = np.round(self.len - nextrow["pos"], 6)
+            newrow["pos"] = (row["pos"] + row["L"] / 2.0) + (newrow["L"] / 2.0)
+            newrows.append(pd.Series(newrow).to_frame().T)
+        return (pd.concat(newrows)).reset_index(drop=True)
