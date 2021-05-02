@@ -12,6 +12,7 @@ from latticeadaptors import (
     parse_table_to_madx_sequence_string,
     parse_table_to_tracy_file,
     parse_table_to_tracy_string,
+    save_string,
 )
 
 from .parsers.TableParsers import _parse_table_to_madx_definitions
@@ -71,6 +72,21 @@ class LatticeAdaptor:
     def madx_sequence_add_start_end_marker_string(self):
         """Return madx string to install marker at start and at end of lattice"""
         return install_start_end_marker(self.name, self.len)
+
+    def madx_sequence_save_string(self, filename):
+        """
+        Method to generate string input for madx
+        to save the sequence.
+
+        Arguments:
+        ----------
+        name        : str
+            name of the lattice sequence
+        filename    : str
+            filename where to save the sequence to.
+
+        """
+        return "SAVE, SEQUENCE={}, file='{}';".format(self.name, filename)
 
     def add_drifts(self):
         """Method to add back drifts to sequence."""
@@ -132,5 +148,4 @@ class LatticeAdaptor:
 
     def parse_table_madx_line_file(self, filename: str):
         """Method to convert table to madx line def lattice file string and write to file."""
-        with open(filename, "w") as f:
-            f.write(self.parse_table_to_madx_line())
+        save_string(self.parse_table_to_madx_line(), filename)

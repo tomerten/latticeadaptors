@@ -3,6 +3,8 @@ from pathlib import Path
 
 import pandas as pd
 
+from ..Utils.Utils import save_string
+
 BASE_DIR = Path(__file__).resolve().parent
 
 # MADX
@@ -132,8 +134,7 @@ def parse_table_to_madx_sequence_file(
     name: str, length: float, df: pd.DataFrame, filename: str
 ) -> None:
     """Method to parse table to madx sequence and save in file."""
-    with open(filename, "w") as f:
-        f.write(parse_table_to_madx_sequence_string(name, length, df))
+    save_string(parse_table_to_madx_sequence_string(name, length, df), filename)
 
 
 def parse_table_to_madx_install_str(name: str, df: pd.DataFrame) -> str:
@@ -270,8 +271,7 @@ def parse_table_to_elegant_string(name: str, df: pd.DataFrame) -> str:
 
 
 def parse_table_to_elegant_file(name: str, df: pd.DataFrame, filename: str) -> None:
-    with open(filename, "w") as f:
-        f.write(parse_table_to_elegant_string(name, df))
+    save_string(parse_table_to_elegant_string(name, df), filename)
 
 
 def parse_table_to_tracy_string(latname: str, df: pd.DataFrame) -> str:
@@ -433,5 +433,4 @@ def parse_table_to_tracy_string(latname: str, df: pd.DataFrame) -> str:
 
 def parse_table_to_tracy_file(latname: str, df: pd.DataFrame, filename: str) -> None:
     """Method to transform the MADX seq table to tracy lattice and write to file."""
-    with open(filename, "w") as f:
-        f.write(parse_table_to_tracy_string(latname, df))
+    save_string(parse_table_to_tracy_string(latname, df), filename)
