@@ -1,4 +1,5 @@
 import queue
+from copy import deepcopy
 
 from latticeadaptors import (
     __version__,
@@ -34,14 +35,14 @@ class LatticeAdaptor:
     def load_from_madx_sequence_string(self, string: str) -> None:
         """Load lattice from sequence as string"""
         # roll back
-        self.history.put((self.name, self.len, self.table))
+        self.history.put((deepcopy(self.name), deepcopy(self.len), deepcopy(self.table)))
 
         self.name, self.len, self.table = parse_from_madx_sequence_string(string)
 
     def load_from_madx_sequence_file(self, filename: str) -> None:
         """Load lattice from sequence in file"""
         # roll back
-        self.history.put((self.name, self.len, self.table))
+        self.history.put((deepcopy(self.name), deepcopy(self.len), deepcopy(self.table)))
 
         self.name, self.len, self.table = parse_from_madx_sequence_file(filename)
 
@@ -90,7 +91,7 @@ class LatticeAdaptor:
 
     def add_drifts(self):
         """Method to add back drifts to sequence."""
-        self.history.put((self.name, self.len, self.table))
+        self.history.put((deepcopy(self.name), deepcopy(self.len), deepcopy(self.table)))
 
         df = self.table.copy()
         df.reset_index(inplace=True, drop=True)
@@ -149,3 +150,29 @@ class LatticeAdaptor:
     def parse_table_madx_line_file(self, filename: str):
         """Method to convert table to madx line def lattice file string and write to file."""
         save_string(self.parse_table_to_madx_line(), filename)
+
+    def get_quad_strengths(self):
+        """Method to return quadrupole strengths as a dict."""
+        return (
+            self.table.loc[self.table.family == "QUADRUPOLE", ["name", "K1"]]
+            .set_index("name", drop=True)
+            .to_dict()["K1"]
+        )
+
+    def get_sext_strengths(self):
+        """Method to return sextupole strengths as a dict"""
+        return (
+            self.table.loc[self.table.family == "SEXTUPOLE", ["name", "K2"]]
+            .set_index("name", drop=True)
+            .to_dict()["K2"]
+        )
+
+    def load_strengths_to_table(self, strdc, col):
+        """
+        Method to load as strength dict to the table, col is the attribute where
+        the strengths will be loaded to.
+        """
+        self.history.put((deepcopy(self.name), deepcopy(self.len), deepcopy(self.table)))
+
+        for k, v in strdc.items():
+            self.table.loc[self.table["name"] == k, col] = v

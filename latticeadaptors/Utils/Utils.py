@@ -52,3 +52,11 @@ def highlight_row(data, _list, column, color="yellow"):
     is_sel = pd.Series(data=False, index=data.index)
     is_sel[column] = data.loc[column].isin(_list)
     return [attr if is_sel.any() else "" for v in is_sel]
+
+
+def display_more(df, maxrows=300, maxcols=100):
+    """
+    Show more rows and columns of a dataframe.
+    """
+    with pd.option_context("display.max_rows", maxrows, "display.max_columns", maxcols):
+        display(df)

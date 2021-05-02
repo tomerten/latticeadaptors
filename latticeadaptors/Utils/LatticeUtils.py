@@ -237,3 +237,51 @@ def split_dipoles(df, _dict, halfbendangle):
             newdf = newdf.append(newrow)
 
     return newdf.reset_index(drop=True)
+
+
+def compare_settings_dicts(dc1, dc2, threshold=1):
+    """
+    Method to compare lattice settings dicts
+    extracted from json lattice files.
+    """
+    combinedc = defaultdict(list)
+    for k, v in chain(dc1.items(), dc2.items()):
+        combinedc[k].append(v)
+
+    for k, v in combinedc.items():
+        if len(v) > 1:
+            if v[0] != v[1]:
+                if abs(v[1] - v[0]) > threshold:
+                    print(colored("WARNING STRONG CHANGE", "red"))
+                print(
+                    colored(
+                        "{:10} {:16.12f} {:16.12f} {:16.12f}".format(k, v[0], v[1], v[1] - v[0]),
+                        "yellow",
+                    )
+                )
+            else:
+                print(
+                    colored(
+                        "{:10} {:16.12f} {:16.12f}".format(k, v[0], v[1], v[1] - v[0]), "green"
+                    )
+                )
+
+
+def print_twiss_summ(tw):
+    from pprint import pprint
+
+    try:
+        dc = [
+            "{:15}:{:15.6e}".format(k, v)
+            if isinstance(v, float)
+            else "{:15}:{:>15}".format(k, v.strip())
+            for k, v in dict(tw.summary).items()
+        ]
+    except:
+        dc = [
+            "{:15}:{:15.6e}".format(k, v)
+            if isinstance(v, float)
+            else "{:15}:{:>15}".format(k, v.strip())
+            for k, v in dict(tw).items()
+        ]
+    pprint(dc)
