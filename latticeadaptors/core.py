@@ -10,6 +10,8 @@ from latticeadaptors import (
     parse_table_to_madx_remove_str,
     parse_table_to_madx_sequence_file,
     parse_table_to_madx_sequence_string,
+    parse_table_to_tracy_file,
+    parse_table_to_tracy_string,
 )
 
 from .Utils.MadxUtils import install_start_end_marke
@@ -56,6 +58,14 @@ class LatticeAdaptor:
     def parse_table_to_elegant_file(self, filename):
         """Parse table to elegant lattice and write to file"""
         parse_table_to_elegant_file(self.name, self.table, filename)
+
+    def parse_table_to_tracy_string(self):
+        """Parse table to tracy lattice file and return as string."""
+        return parse_table_to_tracy_string(self.name, self.table)
+
+    def parse_table_to_tracy_file(self, filename):
+        """Parse table to tracy lattice and write to file"""
+        parse_table_to_tracy_file(self.name, self.table, filename)
 
     def madx_sequence_add_start_end_marker_string(self):
         """Return madx string to install marker at start and at end of lattice"""

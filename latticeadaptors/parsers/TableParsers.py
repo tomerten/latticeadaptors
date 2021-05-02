@@ -429,3 +429,9 @@ def parse_table_to_tracy_string(latname: str, df: pd.DataFrame) -> str:
     text += "\n\nend;"
 
     return text
+
+
+def parse_table_to_tracy_file(latname: str, df: pd.DataFrame, filename: str) -> None:
+    """Method to transform the MADX seq table to tracy lattice and write to file."""
+    with open(filename, "w") as f:
+        f.write(parse_table_to_tracy_string(latname, df))

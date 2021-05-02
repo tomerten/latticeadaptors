@@ -8,5 +8,7 @@ from .parsers.TableParsers import (
     parse_table_to_madx_remove_str,
     parse_table_to_madx_sequence_file,
     parse_table_to_madx_sequence_string,
+    parse_table_to_tracy_file,
+    parse_table_to_tracy_string,
 )
 from .Utils.MadxUtils import install_start_end_marker
