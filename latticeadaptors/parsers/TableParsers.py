@@ -5,10 +5,21 @@ import pandas as pd
 
 BASE_DIR = Path(__file__).resolve().parent
 
+# MADX
 with (BASE_DIR / "../mapfiles/madx_columns.json").open() as file:
     MADX_ATTRIBUTES = load(file)
 
+# ELEGANT
+with (BASE_DIR / "../mapfiles/elegant_columns.json").open() as file:
+    ELEGANT_ATTRIBUTES = load(file)
 
+with (BASE_DIR / "../mapfiles/elegant_element_map.json").open() as file:
+    TO_ELEGANT_ELEMENTS = load(file)
+
+with (BASE_DIR / "../mapfiles/elegant_attribute_map.json").open() as file:
+    TO_ELEGANT_ATTR = load(file)
+
+# TRACY
 def _parse_table_to_madx_definitions(df: pd.DataFrame) -> str:
     """
     Method to parse table to MADX sequence file definitions.
@@ -185,5 +196,75 @@ def parse_table_to_madx_remove_str(name: str, df: pd.DataFrame) -> str:
 
     # end sequence edit
     text += "FLATTEN;\nENDEDIT;"
+
+    return text
+
+
+def parse_table_to_elegant_string(name: str, df: pd.DataFrame) -> str:
+    """
+    Method to transform the MADX seq table to an Elegant lte file
+    """
+
+    # init output
+    text = """"""
+    lattice_template = "{}: LINE=({})".format
+    # element_template = "{}: {}, {}".format
+
+    df = df.drop(columns=["pos", "at"], errors="ignore")
+    lattice_elements = ", ".join(list(df["name"].values))
+    lattice = lattice_template(name, lattice_elements)
+
+    df = df.drop_duplicates()
+
+    # loop over the rows of the frame
+    for _, row in df.iterrows():
+        # get the element family to check against allowed attrs
+        keyword = TO_ELEGANT_ELEMENTS[row["family"]]
+
+        # get allowed attrs - to distinguish madx from elegant columns
+        # print(keyword)
+        # print(TO_ELEGANT_ATTR)
+        allowed_attrs = ELEGANT_ATTRIBUTES[keyword]
+        # print(allowed_attrs)
+
+        line = ""
+
+        # name and element type
+        line += "{:16}: {:12}, ".format(row["name"], keyword)
+
+        # remove non attrs from columns
+        row = row.drop(["name", "at", "family", "end_pos", "sector"], errors="ignore").dropna()
+        # nrow = [TO_ELEGANT_ATTR[c] for c in row.index if (TO_ELEGANT_ATTR[c] != "")]
+        nrow = [TO_ELEGANT_ATTR[c] for c in row.index if c in allowed_attrs]
+        # print(row.index)
+
+        # add allowed madx attributes
+        if len(allowed_attrs) > 0 and len(nrow) > 0:
+            attr_line = (
+                ", ".join(
+                    [
+                        "{}={:16.12f}".format(c, row[c])
+                        if TO_ELEGANT_ATTR[c] in allowed_attrs and not isinstance(row[c], str)
+                        else "{}={:16}".format(c, row[c])
+                        if TO_ELEGANT_ATTR[c] in allowed_attrs
+                        else ""
+                        for c in nrow
+                        # if TO_ELEGANT_ATTR[c] in allowed_attrs
+                    ]
+                )
+                + "\n"
+            )
+        else:
+            attr_line = "\n"
+            line = line[:-2]
+
+        line += attr_line
+
+        # add line to text
+        text += line
+        # print(text)
+
+    text += "\n\n"
+    text += lattice
 
     return text
