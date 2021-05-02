@@ -11,5 +11,24 @@ from .parsers.TableParsers import (
     parse_table_to_tracy_file,
     parse_table_to_tracy_string,
 )
+from .Utils.LatticeUtils import (
+    compare_seq_center_positions,
+    dipole_split_angles_to_dict,
+    split_dipoles,
+)
 from .Utils.MadxUtils import install_start_end_marker
-from .Utils.Utils import delete_first_line, filter_family, is_number, rotate, save_string
+from .Utils.PlotUtils import (
+    Beamlinegraph_compare_from_seq_files,
+    Beamlinegraph_from_seq_file,
+    draw_brace,
+    twissplot,
+)
+from .Utils.Utils import (
+    delete_first_line,
+    filter_family,
+    highlight_cells,
+    highlight_row,
+    is_number,
+    rotate,
+    save_string,
+)

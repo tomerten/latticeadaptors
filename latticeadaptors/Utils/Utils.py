@@ -35,3 +35,20 @@ def save_string(string, file):
     """Quick method to save string to file"""
     with open(file, "w") as f:
         f.write(string)
+
+
+def highlight_cells(data, _list=[], color="yellow"):
+    attr = "background-color: {}".format(color)
+    if data.ndim == 1:
+        is_sel = data.isin(_list)
+        return [attr if v else "" for v in is_sel]
+    else:
+        is_sel = data.isin(_list)
+        return pd.DataFrame(np.where(is_sel, attr, ""), index=data.index, columns=data.columns)
+
+
+def highlight_row(data, _list, column, color="yellow"):
+    attr = "background-color: {}".format(color)
+    is_sel = pd.Series(data=False, index=data.index)
+    is_sel[column] = data.loc[column].isin(_list)
+    return [attr if is_sel.any() else "" for v in is_sel]
