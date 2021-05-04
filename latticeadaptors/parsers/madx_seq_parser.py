@@ -51,7 +51,7 @@ class AbstractSequenceFileTransformer(ABC, Transformer):
         self.seq = attr
 
     def true(self, *attr):
-        return Tru
+        return True
 
 
 @v_args(inline=True)
