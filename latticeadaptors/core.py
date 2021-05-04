@@ -21,7 +21,6 @@ class LatticeAdaptor:
     """Class to convert lattices."""
 
     def __init__(self, **kwargs):
-        self.version = __version__
         self.name = kwargs.get("name", None)
         self.len = kwargs.get("len", 0.0)
         self.table = keargs.get("table", None)
