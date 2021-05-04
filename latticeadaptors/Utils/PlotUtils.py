@@ -14,7 +14,7 @@ from matplotlib.figure import Figure
 from mpl_toolkits.mplot3d import Axes3D
 from termcolor import colored
 
-from ..parsers.madx_seq_parsers import parse_from_madx_sequence_string
+from ..parsers.madx_seq_parser import parse_from_madx_sequence_string
 
 
 def draw_brace(ax, xspan, text, yshift=0.0):
