@@ -15,6 +15,7 @@ from .Utils.LatticeUtils import (
     compare_seq_center_positions,
     compare_settings_dicts,
     dipole_split_angles_to_dict,
+    print_twiss_summ,
     split_dipoles,
 )
 from .Utils.MadxUtils import install_start_end_marker
@@ -30,7 +31,6 @@ from .Utils.Utils import (
     highlight_cells,
     highlight_row,
     is_number,
-    print_twiss_summ,
     rotate,
     save_string,
 )
