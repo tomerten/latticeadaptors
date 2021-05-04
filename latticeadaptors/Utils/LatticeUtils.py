@@ -2,7 +2,7 @@ import os
 
 import pandas as pd
 
-from .latticeparser import parse_madx_seq
+from ..parsers.madx_seq_parser import parse_from_madx_sequence_file
 
 
 def compare_seq_center_positions(seqfile1, seqfile2):
@@ -28,14 +28,11 @@ def compare_seq_center_positions(seqfile1, seqfile2):
     assert os.path.isfile(seqfile1)
     assert os.path.isfile(seqfile2)
 
-    with open(seqfile1, "r") as f:
-        seqstr1 = f.read()
+    name1, len1, df1 = parse_from_madx_sequence_file(seqfile1)
+    name2, len2, df2 = parse_from_madx_sequence_file(seqfile2)
 
-    with open(seqfile2, "r") as f:
-        seqstr2 = f.read()
-
-    table1 = parse_madx_seq(seqstr1)[["name", "pos"]]
-    table2 = parse_madx_seq(seqstr2)[["name", "pos"]]
+    table1 = df1[["name", "pos"]]
+    table2 = df2[["name", "pos"]]
 
     eq = pd.merge(table1, table2, on=["pos"], how="inner")
     diff = table1[~table1["pos"].isin(table2["pos"])]
