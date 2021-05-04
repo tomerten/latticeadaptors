@@ -23,7 +23,7 @@ class LatticeAdaptor:
     def __init__(self, **kwargs):
         self.name = kwargs.get("name", None)
         self.len = kwargs.get("len", 0.0)
-        self.table = keargs.get("table", None)
+        self.table = kwargs.get("table", None)
 
         # roll back
         self.history = queue.LifoQueue()
