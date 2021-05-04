@@ -1,9 +1,9 @@
 import queue
 from copy import deepcopy
 
-from latticeadaptors import (
-    parse_from_madx_sequence_file,
-    parse_from_madx_sequence_string,
+from .parsers.madx_seq_parser import parse_from_madx_sequence_file, parse_from_madx_sequence_string
+from .parsers.TableParsers import (
+    _parse_table_to_madx_definitions,
     parse_table_to_elegant_file,
     parse_table_to_elegant_string,
     parse_table_to_madx_install_str,
@@ -12,11 +12,9 @@ from latticeadaptors import (
     parse_table_to_madx_sequence_string,
     parse_table_to_tracy_file,
     parse_table_to_tracy_string,
-    save_string,
 )
-
-from .parsers.TableParsers import _parse_table_to_madx_definitions
-from .Utils.MadxUtils import install_start_end_marke
+from .Utils.MadxUtils import install_start_end_marker
+from .Utils.Utils import save_string
 
 
 class LatticeAdaptor:
