@@ -13,6 +13,7 @@ from .parsers.TableParsers import (
 )
 from .Utils.LatticeUtils import (
     compare_seq_center_positions,
+    compare_settings_dicts,
     dipole_split_angles_to_dict,
     split_dipoles,
 )
@@ -24,7 +25,6 @@ from .Utils.PlotUtils import (
     twissplot,
 )
 from .Utils.Utils import (
-    compare_settings_dicts,
     delete_first_line,
     filter_family,
     highlight_cells,
