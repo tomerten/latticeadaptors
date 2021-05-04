@@ -29,6 +29,22 @@ optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 
 [[package]]
+name = "cpymad"
+version = "1.8.0"
+description = "Cython binding to MAD-X"
+category = "main"
+optional = false
+python-versions = ">=3.5"
+
+[package.dependencies]
+importlib-resources = "*"
+minrpc = ">=0.0.8"
+numpy = "*"
+
+[package.extras]
+doc = ["sphinx", "sphinx-rtd-theme", "sphinx-substitution-extensions"]
+
+[[package]]
 name = "cycler"
 version = "0.10.0"
 description = "Composable style cycles"
@@ -38,6 +54,18 @@ python-versions = "*"
 
 [package.dependencies]
 six = "*"
+
+[[package]]
+name = "importlib-resources"
+version = "5.1.2"
+description = "Read resources from Python packages"
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[package.extras]
+docs = ["sphinx", "jaraco.packaging (>=8.2)", "rst.linker (>=1.9)"]
+testing = ["pytest (>=4.6)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pytest-cov", "pytest-enabler", "pytest-black (>=0.3.7)", "pytest-mypy"]
 
 [[package]]
 name = "kiwisolver"
@@ -74,6 +102,14 @@ numpy = ">=1.16"
 pillow = ">=6.2.0"
 pyparsing = ">=2.2.1"
 python-dateutil = ">=2.7"
+
+[[package]]
+name = "minrpc"
+version = "0.1.0"
+description = "Minimalistic RPC utility (DO NOT USE!)"
+category = "main"
+optional = false
+python-versions = ">=2.7"
 
 [[package]]
 name = "more-itertools"
@@ -221,7 +257,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "83cc62d9883fc1329060492b1c739331d27396d603cc28a4bc7fe72008b8cefa"
+content-hash = "482e501237cef58d3033c9128ef64b0c1b20a0eecb379a610996322f5b8082d8"
 
 [metadata.files]
 atomicwrites = [
@@ -236,9 +272,31 @@ colorama = [
     {file = "colorama-0.4.4-py2.py3-none-any.whl", hash = "sha256:9f47eda37229f68eee03b24b9748937c7dc3868f906e8ba69fbcbdd3bc5dc3e2"},
     {file = "colorama-0.4.4.tar.gz", hash = "sha256:5941b2b48a20143d2267e95b1c2a7603ce057ee39fd88e7329b0c292aa16869b"},
 ]
+cpymad = [
+    {file = "cpymad-1.8.0-cp35-cp35m-macosx_10_6_x86_64.whl", hash = "sha256:2686be06592743a2dbb6255f9e2b99efeb48666cf7ffa8059b9e35e5e162665b"},
+    {file = "cpymad-1.8.0-cp35-cp35m-manylinux1_x86_64.whl", hash = "sha256:7ae155e959dc105e45d06706fef2a5dba953fe706a431eb90112f8dbd784a09b"},
+    {file = "cpymad-1.8.0-cp35-cp35m-win_amd64.whl", hash = "sha256:d08a4a57e783fbb84db12410bf735d78c2a281a18abe23a075991b6cbe941ba2"},
+    {file = "cpymad-1.8.0-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:7bc549aaa0f7679715f8f3d1caf443de27c519136fb08c2b16d69e137381f3ec"},
+    {file = "cpymad-1.8.0-cp36-cp36m-manylinux1_x86_64.whl", hash = "sha256:d5088209ab0a1cd5ff2698eb3e5d3e5cc06e96871debc76bd9be7826f8367259"},
+    {file = "cpymad-1.8.0-cp36-cp36m-win_amd64.whl", hash = "sha256:2848ac8f92b07730aed40f91d0460701068b0e8ebfa7341bddd8e4dd73624829"},
+    {file = "cpymad-1.8.0-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:04323925b9a8e175aaecb603d338af06b3ea177b3333e2712194d86a2cd17ac2"},
+    {file = "cpymad-1.8.0-cp37-cp37m-manylinux1_x86_64.whl", hash = "sha256:1b350f63bc20db6f7c5b907a8f5e29db3a923a6487a96af65c78fc0d709ffbe9"},
+    {file = "cpymad-1.8.0-cp37-cp37m-win_amd64.whl", hash = "sha256:1337ddfb67dcc060f49bc7e0f55a4ebf5bd6e5f964a5a1a1929c82d5523e664f"},
+    {file = "cpymad-1.8.0-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:d575db927668129dd6c76ce1b42f8ec61c7279e8be78eecd5bf486c37644b19c"},
+    {file = "cpymad-1.8.0-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:4e21c418ff52dc0bb127e34f703f1a236eb0690de950373652cdf55d9ae0a16b"},
+    {file = "cpymad-1.8.0-cp38-cp38-win_amd64.whl", hash = "sha256:e2ea26dcd94529765bc1c33bdd8b3b5cdcfe30325cf10ea5ccd076562bd12bc2"},
+    {file = "cpymad-1.8.0-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:5996e4bbd7098ed13973507e8c38eb65292a3fcced9fbb6a890a37ed9f3fb036"},
+    {file = "cpymad-1.8.0-cp39-cp39-manylinux1_x86_64.whl", hash = "sha256:b5fbac1350ada2ad0d6a5a2644ff614a8bc8df615f8ef5f6e4313792b017cd09"},
+    {file = "cpymad-1.8.0-cp39-cp39-win_amd64.whl", hash = "sha256:b60edab3981b1162a23d9534f82db9dd0d70ebf0f51ddfb10089de316d0db1cc"},
+    {file = "cpymad-1.8.0.tar.gz", hash = "sha256:c9a9368a8e8109634f2bcc154dffcdd1f7bd49e91c5388f3b5690e9c10f6c0ba"},
+]
 cycler = [
     {file = "cycler-0.10.0-py2.py3-none-any.whl", hash = "sha256:1d8a5ae1ff6c5cf9b93e8811e581232ad8920aeec647c37316ceac982b08cb2d"},
     {file = "cycler-0.10.0.tar.gz", hash = "sha256:cd7b2d1018258d7247a71425e9f26463dfb444d411c39569972f4ce586b0c9d8"},
+]
+importlib-resources = [
+    {file = "importlib_resources-5.1.2-py3-none-any.whl", hash = "sha256:ebab3efe74d83b04d6bf5cd9a17f0c5c93e60fb60f30c90f56265fce4682a469"},
+    {file = "importlib_resources-5.1.2.tar.gz", hash = "sha256:642586fc4740bd1cad7690f836b3321309402b20b332529f25617ff18e8e1370"},
 ]
 kiwisolver = [
     {file = "kiwisolver-1.3.1-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:fd34fbbfbc40628200730bc1febe30631347103fc8d3d4fa012c21ab9c11eca9"},
@@ -298,6 +356,10 @@ matplotlib = [
     {file = "matplotlib-3.4.1-cp39-cp39-win32.whl", hash = "sha256:9f374961a3996c2d1b41ba3145462c3708a89759e604112073ed6c8bdf9f622f"},
     {file = "matplotlib-3.4.1-cp39-cp39-win_amd64.whl", hash = "sha256:53ceb12ef44f8982b45adc7a0889a7e2df1d758e8b360f460e435abe8a8cd658"},
     {file = "matplotlib-3.4.1.tar.gz", hash = "sha256:84d4c4f650f356678a5d658a43ca21a41fca13f9b8b00169c0b76e6a6a948908"},
+]
+minrpc = [
+    {file = "minrpc-0.1.0-py2.py3-none-any.whl", hash = "sha256:4b6c99f16d982be722e3583df33e4f537311513aaf9434eeab3de27ab95ad9bf"},
+    {file = "minrpc-0.1.0.tar.gz", hash = "sha256:ec3e58a506411e8fe62d70c73c3c067eb2227ecc35319763d556ef1b2b76d719"},
 ]
 more-itertools = [
     {file = "more-itertools-8.7.0.tar.gz", hash = "sha256:c5d6da9ca3ff65220c3bfd2a8db06d698f05d4d2b9be57e1deb2be5a45019713"},

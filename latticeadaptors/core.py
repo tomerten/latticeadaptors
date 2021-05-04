@@ -1,6 +1,8 @@
 import queue
 from copy import deepcopy
 
+from cpymad.madx import Madx
+
 from .parsers.madx_seq_parser import parse_from_madx_sequence_file, parse_from_madx_sequence_string
 from .parsers.TableParsers import (
     _parse_table_to_madx_definitions,
@@ -14,6 +16,11 @@ from .parsers.TableParsers import (
     parse_table_to_tracy_string,
 )
 from .Utils.MadxUtils import install_start_end_marker
+from .Utils.PlotUtils import (
+    Beamlinegraph_compare_from_seq_files,
+    Beamlinegraph_from_seq_file,
+    draw_brace,
+)
 from .Utils.Utils import save_string
 
 
@@ -24,6 +31,8 @@ class LatticeAdaptor:
         self.name = kwargs.get("name", None)
         self.len = kwargs.get("len", 0.0)
         self.table = kwargs.get("table", None)
+        self.filename = kwargs.get("file", None)
+        self.inputstr = kwargs.get("string", None)
 
         # roll back
         self.history = queue.LifoQueue()

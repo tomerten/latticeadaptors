@@ -14,6 +14,8 @@ from matplotlib.figure import Figure
 from mpl_toolkits.mplot3d import Axes3D
 from termcolor import colored
 
+from ..parsers.madx_seq_parsers import parse_from_madx_sequence_string
+
 
 def draw_brace(ax, xspan, text, yshift=0.0):
     """Draws an annotated brace on the x axes."""
@@ -258,7 +260,7 @@ def Beamlinegraph_from_seq_file(
     with open(seqfile, "r") as f:
         seqfilestr = f.read()
 
-    name, length, table = parse_madx_seq(seqfilestr)
+    name, length, table = parse_from_madx_sequence_string(seqfilestr)
 
     # check if columns are ok
     for c in _REQUIRED_COLUMNS:
