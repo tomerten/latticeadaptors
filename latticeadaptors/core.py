@@ -2,7 +2,6 @@ import queue
 from copy import deepcopy
 
 from latticeadaptors import (
-    __version__,
     parse_from_madx_sequence_file,
     parse_from_madx_sequence_string,
     parse_table_to_elegant_file,
