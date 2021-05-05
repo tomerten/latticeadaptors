@@ -93,8 +93,8 @@ def Beamlinegraph_compare_from_seq_files(seqfile1, seqfile2, start=0.0, stop=Non
     with open(seqfile2, "r") as f:
         seqfilestr2 = f.read()
 
-    name1, len1, table1 = parse_madx_seq(seqfilestr1)
-    name2, len2, table2 = parse_madx_seq(seqfilestr2)
+    name1, len1, table1 = parse_from_madx_sequence_string(seqfilestr1)
+    name2, len2, table2 = parse_from_madx_sequence_string(seqfilestr2)
 
     # check if columns are ok
     for c in _REQUIRED_COLUMNS:
